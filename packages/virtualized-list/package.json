@@ -1,5 +1,5 @@
 {
-  "name": "@patchkit/virtualized-list",
+  "name": "@patch-kit/virtualized-list",
   "version": "0.1.0",
   "description": "Virtualized sortable list with drag-and-drop for React",
   "license": "MIT",
@@ -8,9 +8,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
     }
   },
   "files": ["dist"],
