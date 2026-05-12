@@ -1,0 +1,19 @@
+{
+  "name": "patchkit",
+  "packageManager": "npm@11.4.2",
+  "private": false,
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "release": "turbo run build && changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.0",
+    "turbo": "^2.3.0",
+    "tsup": "^8.1.0",
+    "typescript": "^5.4.0"
+  }
+}
