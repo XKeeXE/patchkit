@@ -66,9 +66,6 @@ export const ModalRenderer = ({ className }: ModalRendererProps) => {
           index={index}
           isTopModal={index === modals.length - 1}
           onClose={closeModal}
-          className={className}
-          ariaLabel={modal.ariaLabel}
-          ariaDescribedBy={modal.ariaDescribedBy}
         />
       ))}
     </>,

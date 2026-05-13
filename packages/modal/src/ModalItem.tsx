@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { ModalInstance } from "./useModal";
 
 interface ModalItemProps {
@@ -9,38 +9,23 @@ interface ModalItemProps {
   isTopModal: boolean;
   className?: string;
   onClose: (id: string) => void;
-  ariaLabel?: string;
-  ariaDescribedBy?: string;
 }
 
 export const ModalItem = ({
   modal,
   index,
   isTopModal,
-  className,
   onClose,
-  ariaLabel,
-  ariaDescribedBy,
 }: ModalItemProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const overlayZIndex = 1100 + index * 2;
   const dialogZIndex = overlayZIndex + 1;
-  const animationDuration = modal.animationDuration ?? 0;
-  const shouldAnimate = animationDuration > 0;
-  const [isOpen, setIsOpen] = useState(!shouldAnimate);
 
-  // Auto-focus this modal when it becomes the top modal
   useEffect(() => {
     if (isTopModal) {
       contentRef.current?.focus();
     }
   }, [isTopModal]);
-
-  useEffect(() => {
-    if (!shouldAnimate) return;
-    const frame = window.requestAnimationFrame(() => setIsOpen(true));
-    return () => window.cancelAnimationFrame(frame);
-  }, [shouldAnimate]);
 
   useEffect(() => {
     if (!isTopModal) return;
@@ -84,24 +69,19 @@ export const ModalItem = ({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isTopModal]);
 
-  const overlayOpacityClass =
-    isOpen && !modal.isClosing ? "opacity-100" : "opacity-0";
-  const dialogStateClass =
-    isOpen && !modal.isClosing ? "opacity-100 scale-100" : "opacity-0 scale-95";
-
   return (
     <div
+      data-id={modal.id}
       className="fixed inset-0 flex items-center justify-center"
       style={{ zIndex: overlayZIndex }}
       role="dialog"
       aria-modal="true"
-      aria-label={ariaLabel}
-      aria-describedby={ariaDescribedBy}
+      aria-label={modal.ariaLabel}
+      aria-describedby={modal.ariaDescribedBy}
     >
-      {/* Overlay */}
       <div
-        className={`absolute inset-0 bg-black/50 transition-opacity ${overlayOpacityClass}`}
-        style={{ transitionDuration: `${animationDuration}ms` }}
+        modal-backdrop=""
+        className="absolute inset-0"
         onClick={() => {
           if (modal.closeOnOutsideClick) {
             onClose(modal.id);
@@ -109,17 +89,10 @@ export const ModalItem = ({
         }}
       />
 
-      {/* Content Wrapper */}
       <div
         ref={contentRef}
         tabIndex={-1}
-        className={`relative max-h-[90vh] max-w-[90vw] overflow-auto rounded-xl bg-white p-6 shadow-2xl transition-opacity transition-transform focus:outline-none ${dialogStateClass} ${
-          className ?? ""
-        }`}
-        style={{
-          zIndex: dialogZIndex,
-          transitionDuration: `${animationDuration}ms`,
-        }}
+        style={{ zIndex: dialogZIndex, position: "relative" }}
         onClick={(e) => e.stopPropagation()}
       >
         {modal.content}
