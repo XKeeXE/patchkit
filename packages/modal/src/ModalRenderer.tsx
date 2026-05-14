@@ -6,17 +6,17 @@ import { ModalItem } from "./ModalItem";
 import { useModal, useModalStore } from "./useModal";
 
 interface ModalRendererProps {
-  className?: string;
+  root?: HTMLElement | string;
 }
 
-export const ModalRenderer = ({ className }: ModalRendererProps) => {
+export const ModalRenderer = ({ root }: ModalRendererProps) => {
   const modals = useModalStore((state) => state.modals);
   const { closeModal } = useModal();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => setIsClient(true), []);
 
-  // 1. SCROLL LOCK
+  // Prevent scrolling the background element
   const hasModals = modals.length > 0;
   useEffect(() => {
     if (hasModals) {
@@ -41,7 +41,22 @@ export const ModalRenderer = ({ className }: ModalRendererProps) => {
     }
   }, [hasModals]);
 
-  // 2. ESCAPE KEY
+  // Disable interactions of the app, excluding the Modal
+  useEffect(() => {
+    const appRoot =
+      typeof root === "string"
+        ? (document.querySelector(root) as HTMLElement | null)
+        : root ?? (document.body.firstElementChild as HTMLElement | null);
+
+    if (!appRoot) return;
+
+    if (hasModals) {
+      appRoot.setAttribute("inert", "");
+      return () => appRoot.removeAttribute("inert");
+    }
+  }, [hasModals, root]);
+
+  // Escape Key implementation
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && modals.length > 0) {

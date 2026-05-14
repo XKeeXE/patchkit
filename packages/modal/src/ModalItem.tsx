@@ -92,7 +92,7 @@ export const ModalItem = ({
       <div
         ref={contentRef}
         tabIndex={-1}
-        style={{ zIndex: dialogZIndex, position: "relative" }}
+        style={{ zIndex: dialogZIndex, position: "relative", outline: "none" }}
         onClick={(e) => e.stopPropagation()}
       >
         {modal.content}
