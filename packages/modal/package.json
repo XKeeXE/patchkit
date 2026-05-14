@@ -1,6 +1,6 @@
 {
   "name": "@patch-kit/modal",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Zustand-powered modal manager for React",
   "license": "MIT",
   "main": "./dist/index.cjs",

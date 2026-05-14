@@ -7,6 +7,7 @@ interface ModalItemProps {
   modal: ModalConfig;
   index: number;
   isTopModal: boolean;
+  isDisabled: boolean;
   className?: string;
   onClose: (id?: string) => void;
 }
@@ -15,6 +16,7 @@ export const ModalItem = ({
   modal,
   index,
   isTopModal,
+  isDisabled,
   onClose,
 }: ModalItemProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -36,6 +38,7 @@ export const ModalItem = ({
       aria-modal="true"
       aria-label={modal.options?.ariaLabel}
       aria-describedby={modal.options?.ariaDescribedBy}
+      {...(isDisabled ? { inert: "" } : {})}
     >
       <div
         modal-backdrop=""

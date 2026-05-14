@@ -43,6 +43,8 @@ export const ModalRenderer = ({ root }: ModalRendererProps) => {
 
   // Disable interactions of the app, excluding the Modal
   useEffect(() => {
+    const shouldDisable = hasModals && modals.some((m) => m.options?.disableBackground);
+
     const appRoot =
       typeof root === "string"
         ? (document.querySelector(root) as HTMLElement | null)
@@ -50,11 +52,11 @@ export const ModalRenderer = ({ root }: ModalRendererProps) => {
 
     if (!appRoot) return;
 
-    if (hasModals) {
+    if (shouldDisable) {
       appRoot.setAttribute("inert", "");
       return () => appRoot.removeAttribute("inert");
     }
-  }, [hasModals, root]);
+  }, [hasModals, modals, root]);
 
   // Escape Key implementation
   useEffect(() => {
@@ -74,15 +76,22 @@ export const ModalRenderer = ({ root }: ModalRendererProps) => {
 
   return createPortal(
     <>
-      {modals.map((modal, index) => (
-        <ModalItem
-          key={modal.id}
-          modal={modal}
-          index={index}
-          isTopModal={index === modals.length - 1}
-          onClose={closeModal}
-        />
-      ))}
+      {modals.map((modal, index) => {
+        const isDisabled = modals
+          .slice(index + 1)
+          .some((m) => m.options?.disableBackground);
+
+        return (
+          <ModalItem
+            key={modal.id}
+            modal={modal}
+            index={index}
+            isTopModal={index === modals.length - 1}
+            isDisabled={isDisabled}
+            onClose={closeModal}
+          />
+        );
+      })}
     </>,
     document.body
   );
