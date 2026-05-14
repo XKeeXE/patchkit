@@ -3,31 +3,33 @@
 import type { ReactNode } from "react";
 import { create } from "zustand";
 
-export type ModalContent = ReactNode;
 
-interface ModalOptions {
-  id?: string;
-  closeOnOutsideClick?: boolean;
-  ariaLabel?: string;
-  ariaDescribedBy?: string;
-  onClose?: () => void;
-}
-
-export interface ModalInstance {
+export interface ModalConfig {
   id: string;
-  content: ModalContent;
-  closeOnOutsideClick: boolean;
-  ariaLabel?: string;
-  ariaDescribedBy?: string;
-  onClose?: () => void;
+  content: ReactNode;
+  options?: {
+    closeOnOutsideClick: boolean;
+    disableBackground: boolean;
+    ariaLabel?: string;
+    ariaDescribedBy?: string;
+    onOpen?: () => void;
+    onClose?: () => void;
+  }
 }
+
+type ModalOptions = ModalConfig["options"] & { id?: string };
 
 interface ModalStore {
-  modals: ModalInstance[];
-  showModal: (content: ModalContent, options?: ModalOptions) => string;
+  modals: ModalConfig[];
+  showModal: (content: ReactNode, options?: ModalOptions) => string;
   closeModal: (id?: string) => void;
   closeAllModals: () => void;
 }
+
+const MODAL_DEFAULTS: ModalConfig["options"] = {
+  closeOnOutsideClick: true,
+  disableBackground: true,
+};
 
 const createId = () => {
   if (typeof crypto !== "undefined" && crypto.randomUUID) {
@@ -40,31 +42,26 @@ export const useModalStore = create<ModalStore>((set, get) => ({
   modals: [],
   showModal: (content, options) => {
     const id = options?.id ?? createId();
-    const closeOnOutsideClick = options?.closeOnOutsideClick ?? true;
-    const onClose = options?.onClose ?? (() => void 0);
-    const ariaLabel = options?.ariaLabel;
-    const ariaDescribedBy = options?.ariaDescribedBy;
+    const resolved: ModalConfig = {
+      id,
+      content,
+      options: {
+        ...MODAL_DEFAULTS,
+        ...options,
+      },
+    };
 
     set((state) => {
       const existingIndex = state.modals.findIndex((m) => m.id === id);
-      const nextModal: ModalInstance = {
-        id,
-        content,
-        onClose,
-        closeOnOutsideClick,
-        ariaLabel,
-        ariaDescribedBy,
-      };
-
       if (existingIndex !== -1) {
         const updated = [...state.modals];
-        updated[existingIndex] = nextModal;
+        updated[existingIndex] = resolved;
         return { modals: updated };
       }
-
-      return { modals: [...state.modals, nextModal] };
+      return { modals: [...state.modals, resolved] };
     });
 
+    resolved.options?.onOpen?.();
     return id;
   },
   closeModal: (id) => {
@@ -75,7 +72,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
 
     if (!target) return;
 
-    target.onClose?.();
+    target.options?.onClose?.();
     set((state) => ({
       modals: state.modals.filter((modal) => modal.id !== target.id),
     }));

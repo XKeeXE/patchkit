@@ -61,7 +61,7 @@ export const ModalRenderer = ({ root }: ModalRendererProps) => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && modals.length > 0) {
         const topModal = modals[modals.length - 1];
-        if (topModal.closeOnOutsideClick) {
+        if (topModal.options?.closeOnOutsideClick) {
           closeModal();
         }
       }
