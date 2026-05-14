@@ -8,8 +8,8 @@ export interface ModalConfig {
   id: string;
   content: ReactNode;
   options?: {
-    closeOnOutsideClick: boolean;
-    disableBackground: boolean;
+    closeOnOutsideClick?: boolean;
+    disableBackground?: boolean;
     ariaLabel?: string;
     ariaDescribedBy?: string;
     onOpen?: () => void;
@@ -17,7 +17,7 @@ export interface ModalConfig {
   }
 }
 
-type ModalOptions = ModalConfig["options"] & { id?: string };
+type ModalOptions = NonNullable<ModalConfig["options"]> & { id?: string };
 
 interface ModalStore {
   modals: ModalConfig[];
