@@ -26,7 +26,6 @@ jobs:
         run: npm run build
 
       - name: Publish
-        run: npm run release
+        run: npm publish -w packages/modal --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
