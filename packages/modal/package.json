@@ -1,15 +1,15 @@
 {
   "name": "@patch-kit/modal",
-  "version": "0.1.7",
-  "description": "Zustand-powered modal manager for React",
+  "version": "1.0.0",
+  "description": "Modal Engine for React",
   "license": "MIT",
   "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
+      "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     }
   },

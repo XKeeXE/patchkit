@@ -32,8 +32,17 @@ export const ModalItem = ({
   return (
     <div
       data-id={modal.id}
-      className="fixed inset-0 flex items-center justify-center"
-      style={{ zIndex: overlayZIndex }}
+      style={{
+        zIndex: overlayZIndex,
+        position: "fixed",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
       role="dialog"
       aria-modal="true"
       aria-label={modal.options?.ariaLabel}
@@ -42,7 +51,7 @@ export const ModalItem = ({
     >
       <div
         modal-backdrop=""
-        className="absolute inset-0"
+        style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
         onClick={() => {
           if (modal.options?.closeOnOutsideClick) {
             onClose?.(modal.id);
