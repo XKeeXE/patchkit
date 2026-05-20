@@ -3,21 +3,19 @@
 import type { ReactNode } from "react";
 import { create } from "zustand";
 
-
 export interface ModalConfig {
   id: string;
   content: ReactNode;
-  options?: {
-    closeOnOutsideClick?: boolean;
-    disableBackground?: boolean;
-    ariaLabel?: string;
-    ariaDescribedBy?: string;
-    onOpen?: () => void;
-    onClose?: () => void;
-  }
+  options?: Omit<ModalOptions, "id">
 }
 
-type ModalOptions = NonNullable<ModalConfig["options"]> & { id?: string };
+type ModalOptions = {
+  id?: string;
+  closeOnOutsideClick?: boolean;
+  disableBackground?: boolean;
+  onOpen?: () => void;
+  onClose?: () => void;
+};
 
 interface ModalStore {
   modals: ModalConfig[];
@@ -26,7 +24,7 @@ interface ModalStore {
   closeAllModals: () => void;
 }
 
-const MODAL_DEFAULTS: ModalConfig["options"] = {
+const MODAL_DEFAULTS: ModalOptions = {
   closeOnOutsideClick: true,
   disableBackground: true,
 };

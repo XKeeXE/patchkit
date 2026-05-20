@@ -2,14 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { ModalItem } from "./ModalItem";
+import Modal from "./";
 import { useModal, useModalStore } from "./useModal";
 
 interface ModalRendererProps {
   root?: HTMLElement | string;
+  closeKey?: string | string[];
 }
 
-export const ModalRenderer = ({ root }: ModalRendererProps) => {
+/**
+ * An orchestrator that is a single state manager for all modals. 
+ * This manages what modal should be the main focus while managing how the modal itself behaves.
+ */
+export const ModalRenderer = ({ root, closeKey = "Escape" }: ModalRendererProps) => {
   const modals = useModalStore((state) => state.modals);
   const { closeModal } = useModal();
   const [isClient, setIsClient] = useState(false);
@@ -60,8 +65,9 @@ export const ModalRenderer = ({ root }: ModalRendererProps) => {
 
   // Escape Key implementation
   useEffect(() => {
+    const keys = Array.isArray(closeKey) ? closeKey : [closeKey];
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && modals.length > 0) {
+      if (keys.includes(event.key) && modals.length > 0) {
         const topModal = modals[modals.length - 1];
         if (topModal.options?.closeOnOutsideClick) {
           closeModal();
@@ -70,7 +76,7 @@ export const ModalRenderer = ({ root }: ModalRendererProps) => {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [modals, closeModal]);
+  }, [modals, closeModal, closeKey]);
 
   if (!isClient) return null;
 
@@ -82,12 +88,12 @@ export const ModalRenderer = ({ root }: ModalRendererProps) => {
           .some((m) => m.options?.disableBackground);
 
         return (
-          <ModalItem
+          <Modal
             key={modal.id}
             modal={modal}
             index={index}
             isTopModal={index === modals.length - 1}
-            isDisabled={isDisabled}
+            inert={isDisabled}
             onClose={closeModal}
           />
         );

@@ -3,22 +3,22 @@
 import { useEffect, useRef } from "react";
 import { ModalConfig } from "./useModal";
 
-interface ModalItemProps {
+interface ModalProps {
   modal: ModalConfig;
   index: number;
   isTopModal: boolean;
-  isDisabled: boolean;
+  inert: boolean;
   className?: string;
   onClose: (id?: string) => void;
 }
 
-export const ModalItem = ({
+const Modal = ({
   modal,
   index,
   isTopModal,
-  isDisabled,
+  inert,
   onClose,
-}: ModalItemProps) => {
+}: ModalProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const overlayZIndex = 1100 + index * 2;
   const dialogZIndex = overlayZIndex + 1;
@@ -32,6 +32,7 @@ export const ModalItem = ({
   return (
     <div
       data-id={modal.id}
+      tabIndex={-1}
       style={{
         zIndex: overlayZIndex,
         position: "fixed",
@@ -45,9 +46,7 @@ export const ModalItem = ({
       }}
       role="dialog"
       aria-modal="true"
-      aria-label={modal.options?.ariaLabel}
-      aria-describedby={modal.options?.ariaDescribedBy}
-      {...(isDisabled ? { inert: "" } : {})}
+      {...(inert ? { inert: "" } : {})}
     >
       <div
         modal-backdrop=""
@@ -70,3 +69,7 @@ export const ModalItem = ({
     </div>
   );
 };
+
+export default Modal;
+export { ModalRenderer } from "./ModalRenderer";
+export { useModal } from "./useModal";
