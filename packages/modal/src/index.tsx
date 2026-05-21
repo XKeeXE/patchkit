@@ -73,3 +73,4 @@ const Modal = ({
 export default Modal;
 export { ModalRenderer } from "./ModalRenderer";
 export { useModal } from "./useModal";
+export type { ModalOptions } from "./useModal";

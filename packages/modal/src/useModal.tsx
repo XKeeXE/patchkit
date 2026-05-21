@@ -9,7 +9,7 @@ export interface ModalConfig {
   options?: Omit<ModalOptions, "id">
 }
 
-type ModalOptions = {
+export type ModalOptions = {
   id?: string;
   closeOnOutsideClick?: boolean;
   disableBackground?: boolean;
