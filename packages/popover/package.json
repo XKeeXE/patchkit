@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Popover Engine for React",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/XKeeXE/patchkit",
+    "directory": "packages/popover"
+  },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
