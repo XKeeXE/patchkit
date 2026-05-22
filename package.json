@@ -2,7 +2,7 @@
   "name": "patchkit",
   "packageManager": "npm@11.4.2",
   "private": false,
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": ["packages/*", "storybook"],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",

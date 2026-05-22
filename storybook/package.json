@@ -7,7 +7,8 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@patch-kit/modal": "*"
+    "@patch-kit/modal": "*",
+    "@patch-kit/popover": "*"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "8.6.14",
