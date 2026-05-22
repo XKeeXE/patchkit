@@ -25,7 +25,16 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Publish
-        run: npm publish -w packages/modal --provenance
+      - name: Publish all packages
+        run: |
+          for pkg in packages/*/; do
+            NAME=$(node -p "require('./${pkg}package.json').name")
+            VERSION=$(node -p "require('./${pkg}package.json').version")
+            if npm view "${NAME}@${VERSION}" version &>/dev/null; then
+              echo "Skipping ${NAME}@${VERSION} (already published)"
+            else
+              npm publish -w "$pkg" --provenance
+            fi
+          done
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
