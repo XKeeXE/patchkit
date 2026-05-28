@@ -203,3 +203,5 @@ export const VirtualizedList = memo(
 ) as <T, C = any>(
   props: VirtualizedListProps<T, C> & { ref?: React.Ref<VirtualizedListRef> }
 ) => React.ReactElement;
+
+export type { VirtualizedListProps, VirtualizedListRef, ItemComponentProps, SeparatorComponentProps } from './types';

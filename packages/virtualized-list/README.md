@@ -197,16 +197,10 @@ export interface VirtualizedListRef {
 }
 ```
 
-## Dependencies
-
-* `react-virtuoso` - Core virtualization engine
-* `@dnd-kit/core` - Core drag-and-drop functionality
-* `@dnd-kit/sortable` - Sortable list utilities
-* `@dnd-kit/modifiers` - Axis restriction modifiers
-* `@dnd-kit/utilities` - Helper functions for array manipulation
-
-Install with:
+## Installation
 
 ```bash
-npm install react-virtuoso @dnd-kit/core @dnd-kit/sortable @dnd-kit/modifiers @dnd-kit/utilities
+npm install @patch-kit/virtualized-list
 ```
+
+All dependencies are bundled — no additional installs required.
