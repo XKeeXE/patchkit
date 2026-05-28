@@ -15,6 +15,7 @@ interface ToastRendererProps<T extends string = string> extends ToastOptions {
   component: ComponentType<ToastItemProps<T>>;
   placement?: ToastPlacement;
   offset?: number;
+  limit?: number;
 }
 
 function getContainerStyle(placement: ToastPlacement, offset: number): CSSProperties {
@@ -45,13 +46,20 @@ export function ToastRenderer<T extends string = string>({
   placement = TOAST_DEFAULTS.placement,
   offset = TOAST_DEFAULTS.offset,
   duration = TOAST_DEFAULTS.duration,
+  limit,
   onOpen,
-  onClose: onDismiss,
+  onClose,
 }: ToastRendererProps<T>) {
   const toasts = useToastStore((store) => store.toasts);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => setIsClient(true), []);
+
+  useEffect(() => {
+    if (limit === undefined) return;
+    const excess = toasts.slice(0, Math.max(0, toasts.length - limit));
+    excess.forEach((toast) => useToastStore.getState().closeToast(toast.id));
+  }, [toasts.length, limit]);
 
   if (!isClient) return null;
 
@@ -68,7 +76,7 @@ export function ToastRenderer<T extends string = string>({
           component={component}
           duration={duration}
           onOpen={onOpen}
-          onClose={onDismiss}
+          onClose={onClose}
         />
       ))}
     </div>,
