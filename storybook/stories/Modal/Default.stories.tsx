@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useModal, ModalOptions } from "@patch-kit/modal";
+import { TRIGGER } from "../utils";
 
 const STORY_ONLY_KEYS = new Set(["title", "body", "backdrop"]);
 
@@ -63,7 +64,7 @@ const Trigger = (args: StoryArgs) => {
             pickOptions(args),
           )
         }
-        className="py-2.5 px-6 rounded-lg border border-gray-300 cursor-pointer text-[15px] bg-white hover:bg-gray-50 transition-colors"
+        className={TRIGGER}
       >
         Open Modal
       </button>

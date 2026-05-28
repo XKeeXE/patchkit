@@ -1,6 +1,7 @@
 import React from "react";
 import type { ArgTypes } from "@storybook/react";
 import type { PopoverOptions } from "@patch-kit/popover";
+import { HIDDEN } from "../utils";
 
 export const Panel = ({
   children,
@@ -81,8 +82,6 @@ export const sharedArgs: StoryArgs = {
   submenuItems: ["Option A", "Option B", "Option C"],
 };
 
-export const HIDDEN = { table: { disable: true } } as const;
-export const SHOW = { table: { disable: false } } as const;
 
 // PopoverOptions fields are always visible.
 // Story-specific fields are hidden by default — use SHOW in a story's argTypes to expose one.

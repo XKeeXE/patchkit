@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { usePopover } from "@patch-kit/popover";
 import {
@@ -6,9 +6,10 @@ import {
   StoryArgs,
   sharedArgs,
   sharedArgTypes,
-  SHOW,
   pickOptions,
 } from "./.shared";
+import { SHOW, TRIGGER } from "../utils";
+
 
 const meta: Meta<StoryArgs> = {
   title: "POPOVER",
@@ -53,7 +54,7 @@ const Trigger = (args: StoryArgs) => {
           },
         );
       }}
-      className="px-6 py-2.5 rounded-lg border border-gray-300 cursor-pointer text-[15px] bg-white hover:bg-gray-50 transition-colors"
+      className={TRIGGER}
     >
       Open Popover
     </button>

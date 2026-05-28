@@ -6,9 +6,9 @@ import {
   StoryArgs,
   sharedArgs,
   sharedArgTypes,
-  SHOW,
   pickOptions,
 } from "./.shared";
+import { SHOW } from "../utils";
 
 const meta: Meta<StoryArgs> = {
   title: "POPOVER",
