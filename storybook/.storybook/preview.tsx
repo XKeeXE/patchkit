@@ -1,6 +1,7 @@
 import type { Preview } from "@storybook/react";
 import { ModalRenderer } from "@patch-kit/modal";
 import { PopoverRenderer } from "@patch-kit/popover";
+// @ts-ignore
 import "./tailwind.css";
 
 const preview: Preview = {

@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "@patch-kit/modal": "*",
-    "@patch-kit/popover": "*"
+    "@patch-kit/popover": "*",
+    "@patch-kit/toast": "*",
+    "@patch-kit/virtualized-list": "*"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "8.6.14",
