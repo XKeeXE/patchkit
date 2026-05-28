@@ -9,10 +9,12 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      id-token: write # Required for npm provenance
+      contents: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -21,6 +23,48 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Auto-bump changed packages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          BUMPED=false
+          for pkg in packages/*/; do
+            NAME=$(node -p "require('./${pkg}package.json').name")
+            VERSION=$(node -p "require('./${pkg}package.json').version")
+
+            if npm view "${NAME}@${VERSION}" version &>/dev/null; then
+              # Find the last commit that touched this package's version
+              LAST_COMMIT=$(git log --oneline -1 -- "${pkg}package.json" | awk '{print $1}')
+              if [ -z "$LAST_COMMIT" ]; then continue; fi
+
+              # Check if any files changed in this package since that commit (ignoring package.json and dist/)
+              CHANGES=$(git diff "$LAST_COMMIT"..HEAD --name-only -- "$pkg" \
+                | grep -v "^${pkg}package.json$" \
+                | grep -v "^${pkg}dist/" \
+                | head -1)
+
+              if [ -n "$CHANGES" ]; then
+                echo "Changes detected in ${NAME} since v${VERSION} — auto-bumping patch"
+                node -e "
+                  const fs = require('fs');
+                  const p = JSON.parse(fs.readFileSync('${pkg}package.json'));
+                  const [maj, min, pat] = p.version.split('.').map(Number);
+                  p.version = [maj, min, pat + 1].join('.');
+                  fs.writeFileSync('${pkg}package.json', JSON.stringify(p, null, 2) + '\n');
+                  console.log('  ' + p.name + ': ' + p.version);
+                "
+                BUMPED=true
+              fi
+            fi
+          done
+
+          if [ "$BUMPED" = "true" ]; then
+            git add packages/*/package.json
+            git commit -m "chore: auto-bump patch versions [skip ci]"
+            git push
+          fi
 
       - name: Build
         run: npm run build

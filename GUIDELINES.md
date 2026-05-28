@@ -164,11 +164,11 @@ export const Tooltip: StoryObj<StoryArgs> = {
 
 ## Publishing
 
-Bumping the `version` field in `package.json` and pushing to `main` is all that's needed. The CI workflow builds all packages and publishes any version not yet on npm.
+It is REQUIRED to bump the `version` field in `package.json` and pushing to `main`. The CI workflow builds all packages and publishes any version not yet on npm.
 
 - Patch (`1.0.0` → `1.0.1`): bug fixes or code organization
 - Minor (`1.0.0` → `1.1.0`): new options or features
-- Major (`1.0.0` → `2.0.0`): breaking API changes
+- Major (`1.0.0` → `2.0.0`): API changes
 
 ---
 
