@@ -6,6 +6,8 @@ This modal focuses on being a purely technical engine, its only job is to handle
 
 The modal automatically handles stacking, z-indexing, focus-trapping, scroll-lock, keyboard-close, and outside-click close.
 
+**Interactive demo:** [Default](https://xkeexe.github.io/patchkit/?path=/story/modal--default)
+
 ## Folder contents
 - `useModal.tsx` - Zustand store, `useModal` hook, and shared modal types.
 - `Modal.tsx` - Single modal instance renderer (overlay + content).

@@ -2,11 +2,15 @@
 
 A self-contained undo/redo system for using the Command Pattern.
 
+**Interactive demo:** [Default](https://xkeexe.github.io/patchkit/?path=/story/history--default)
+
 ---
 
 ## Overview
 
 Each user action is recorded as a command with `undo()` and `redo()` functions, enabling full history traversal. The factory pattern ensures each history instance is independently scoped and fully typed.
+
+Example usage
 
 ---
 

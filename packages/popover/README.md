@@ -6,6 +6,8 @@ This popover focuses on being a purely technical engine — its only job is to h
 
 The popover automatically handles stacking, z-indexing, viewport boundary correction, safe zone tracking, auto-close on mouse leave, outside-click close, and parent-child cascade closing.
 
+**Interactive demo:** [Default](https://xkeexe.github.io/patchkit/?path=/story/popover--default) · [Tooltip](https://xkeexe.github.io/patchkit/?path=/story/popover--tooltip) · [Dropdown](https://xkeexe.github.io/patchkit/?path=/story/popover--dropdown) · [Context Menu](https://xkeexe.github.io/patchkit/?path=/story/popover--context-menu)
+
 ## Folder contents
 - `usePopover.tsx` — Zustand store, `usePopover` hook, and shared popover types.
 - `Popover.tsx` — Single popover instance renderer (positioning + event handling).
