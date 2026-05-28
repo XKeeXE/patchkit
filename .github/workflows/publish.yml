@@ -33,7 +33,7 @@ jobs:
             if npm view "${NAME}@${VERSION}" version &>/dev/null; then
               echo "Skipping ${NAME}@${VERSION} (already published)"
             else
-              npm publish -w "$pkg" --provenance
+              npm publish -w "$pkg" --provenance --access public
             fi
           done
         env:
