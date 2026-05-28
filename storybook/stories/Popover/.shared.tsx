@@ -90,7 +90,7 @@ export const sharedArgTypes: Partial<ArgTypes<StoryArgs>> = {
   message: { control: "text", ...HIDDEN },
   placement: {
     control: { type: "select" },
-    options: ["top", "bottom", "left", "right"],
+    options: ["bottom", "top", "left", "right", "bottom-left", "bottom-right", "top-left", "top-right"],
   },
   gap: { control: { type: "range", min: 0, max: 40, step: 1 } },
   closeOnOutsideClick: { control: "boolean" },

@@ -13,7 +13,7 @@ export interface PopoverConfig {
 export type PopoverOptions = {
   id?: string
   parentId?: string;
-  placement?: "top" | "left" | "bottom" | "right";
+  placement?: "top" | "bottom" | "left" | "right" | "top-left" | "top-right" | "bottom-left" | "bottom-right";
   gap?: number;
   safeZone?: {
     trigger?: HTMLElement | null;

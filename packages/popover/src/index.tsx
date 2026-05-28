@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { POPOVER_DEFAULTS, PopoverConfig, PopoverOptions, usePopoverStore } from "./usePopover";
+import {
+  POPOVER_DEFAULTS,
+  PopoverConfig,
+  PopoverOptions,
+  usePopoverStore,
+} from "./usePopover";
 
 interface PopoverProps {
   popover: PopoverConfig;
@@ -11,7 +16,7 @@ const VIEWPORT_PADDING = 10;
 
 const Popover = ({ popover }: PopoverProps) => {
   const closePopover = usePopoverStore((state) => state.closePopover);
-  
+
   const popoverRef = useRef<HTMLDivElement>(null);
   const autoCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -21,7 +26,8 @@ const Popover = ({ popover }: PopoverProps) => {
   } | null>(null);
 
   const options = { ...POPOVER_DEFAULTS, ...popover.options };
-  const { placement, gap, closeOnOutsideClick } = options as Required<PopoverOptions>;
+  const { placement, gap, closeOnOutsideClick } =
+    options as Required<PopoverOptions>;
   const { autoCloseDelay } = options;
   const { trigger, container } = options.safeZone ?? {};
   const anchor = popover.anchor;
@@ -53,23 +59,34 @@ const Popover = ({ popover }: PopoverProps) => {
         x: anchor.right + gap,
         y: anchor.top + anchor.height / 2 - ph / 2,
       },
+      "bottom-left": { x: anchor.left, y: anchor.bottom + gap },
+      "bottom-right": { x: anchor.right - pw, y: anchor.bottom + gap },
+      "top-left": { x: anchor.left, y: anchor.top - ph - gap },
+      "top-right": { x: anchor.right - pw, y: anchor.top - ph - gap },
+    };
+
+    type Placement = keyof typeof positions;
+    const flipMap: Record<Placement, Placement> = {
+      bottom: "top",
+      top: "bottom",
+      left: "right",
+      right: "left",
+      "bottom-left": "top-left",
+      "top-left": "bottom-left",
+      "bottom-right": "top-right",
+      "top-right": "bottom-right",
     };
 
     // Smart flip if the preferred placement clips the viewport
-    let resolved: "top" | "left" | "bottom" | "right" = placement;
-    if (
-      placement === "bottom" &&
-      positions.bottom.y + ph > vh - VIEWPORT_PADDING
-    )
-      resolved = "top";
-    else if (placement === "top" && positions.top.y < VIEWPORT_PADDING)
-      resolved = "bottom";
-    else if (
-      placement === "right" &&
-      positions.right.x + pw > vw - VIEWPORT_PADDING
-    )
+    let resolved: Placement = placement;
+    const pos = positions[resolved];
+    if (resolved.startsWith("bottom") && pos.y + ph > vh - VIEWPORT_PADDING)
+      resolved = flipMap[resolved];
+    else if (resolved.startsWith("top") && pos.y < VIEWPORT_PADDING)
+      resolved = flipMap[resolved];
+    else if (resolved === "right" && pos.x + pw > vw - VIEWPORT_PADDING)
       resolved = "left";
-    else if (placement === "left" && positions.left.x < VIEWPORT_PADDING)
+    else if (resolved === "left" && pos.x < VIEWPORT_PADDING)
       resolved = "right";
 
     let { x, y } = positions[resolved];
@@ -169,13 +186,7 @@ const Popover = ({ popover }: PopoverProps) => {
 
     document.addEventListener("mousedown", handleMouseDown);
     return () => document.removeEventListener("mousedown", handleMouseDown);
-  }, [
-    popover.id,
-    closeOnOutsideClick,
-    trigger,
-    container,
-    closePopover,
-  ]);
+  }, [popover.id, closeOnOutsideClick, trigger, container, closePopover]);
 
   return (
     <div

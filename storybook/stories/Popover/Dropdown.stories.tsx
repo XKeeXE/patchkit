@@ -103,9 +103,14 @@ const Trigger = (args: StoryArgs) => {
 };
 
 export const Dropdown: StoryObj<StoryArgs> = {
+  args: {
+    placement: "bottom-left"
+  },
+
   argTypes: {
     dropdownItems: SHOW,
     submenuItems: SHOW,
   },
-  render: (args) => <Trigger {...args} />,
+
+  render: (args) => <Trigger {...args} />
 };
