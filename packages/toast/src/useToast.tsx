@@ -1,7 +1,8 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ComponentType, ReactNode } from "react";
 import { create } from "zustand";
+import { ToastRenderer as ToastRendererBase, ToastRendererProps } from "./ToastRenderer";
 
 export type ToastPlacement =
   | "top-left"
@@ -37,7 +38,7 @@ export const TOAST_DEFAULTS = {
   offset: 16,
 };
 
-const createId = () => {
+export const createId = () => {
   if (typeof crypto !== "undefined" && crypto.randomUUID) {
     return crypto.randomUUID();
   }
@@ -68,13 +69,19 @@ export const useToastStore = create<ToastStore>((set, get) => ({
   },
 }));
 
-export function useToast<T extends string = string>() {
-  const { addToast, closeAllToasts } = useToastStore();
+export function createToast<T extends string>() {
+  function useToast() {
+    const { addToast, closeAllToasts } = useToastStore();
 
-  const toast = (content: ReactNode, type: T, options?: ToastOptions) => {
-    addToast({ id: createId(), content, type, options });
-    options?.onOpen?.();
-  };
+    const toast = (content: ReactNode, type: T, options?: ToastOptions) => {
+      addToast({ id: createId(), content, type, options });
+      options?.onOpen?.();
+    };
 
-  return { toast, closeAllToasts };
+    return { toast, closeAllToasts };
+  }
+
+  const ToastRenderer = ToastRendererBase as ComponentType<ToastRendererProps<T>>;
+
+  return { useToast, ToastRenderer };
 }

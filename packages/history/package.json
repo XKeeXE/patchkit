@@ -1,6 +1,6 @@
 {
   "name": "@patch-kit/history",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "History Manager for React",
   "license": "MIT",
   "repository": {

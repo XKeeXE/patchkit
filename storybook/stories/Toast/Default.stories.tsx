@@ -1,7 +1,9 @@
 import { useMemo } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { useToast, ToastRenderer } from "@patch-kit/toast";
+import { createToast } from "@patch-kit/toast";
 import type { ToastItemProps, ToastPlacement } from "@patch-kit/toast";
+
+const { useToast, ToastRenderer } = createToast<string>();
 
 type TypeConfig = { type: string; color: string };
 
@@ -53,7 +55,7 @@ const meta: Meta<StoryArgs> = {
 export default meta;
 
 const Trigger = (args: StoryArgs) => {
-  const { toast } = useToast<string>();
+  const { toast } = useToast();
 
   const ToastComponent = useMemo(() => {
     const colorMap = Object.fromEntries(

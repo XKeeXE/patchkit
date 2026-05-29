@@ -3,7 +3,7 @@
 import { ComponentType, CSSProperties, ReactNode, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { TOAST_DEFAULTS, ToastOptions, ToastPlacement, useToastStore } from "./useToast";
-import ToastItem from "./";
+import ToastItem from ".";
 
 export interface ToastItemProps<T extends string = string> {
   content: ReactNode;
@@ -11,7 +11,7 @@ export interface ToastItemProps<T extends string = string> {
   closeToast: () => void;
 }
 
-interface ToastRendererProps<T extends string = string> extends ToastOptions {
+export interface ToastRendererProps<T extends string = string> extends ToastOptions {
   component: ComponentType<ToastItemProps<T>>;
   placement?: ToastPlacement;
   offset?: number;

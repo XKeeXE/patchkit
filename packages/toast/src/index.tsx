@@ -49,7 +49,6 @@ function ToastItem<T extends string = string>({
 }
 
 export default ToastItem;
-export { ToastRenderer } from "./ToastRenderer";
-export { useToast } from "./useToast";
+export { createToast } from "./useToast";
 export type { ToastOptions, ToastPlacement } from "./useToast";
 export type { ToastItemProps } from "./ToastRenderer";
