@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useIsClient } from "@patch-kit/utils";
 import Modal from "./";
 import { useModal, useModalStore } from "./useModal";
 
@@ -34,9 +35,7 @@ interface ModalRendererProps {
 export const ModalRenderer = ({ root, closeKey = "Escape" }: ModalRendererProps) => {
   const modals = useModalStore((state) => state.modals);
   const { closeModal, closeAllModals } = useModal();
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => setIsClient(true), []);
+  const isClient = useIsClient();
 
   // Prevent scrolling the background element
   const hasModals = modals.length > 0;

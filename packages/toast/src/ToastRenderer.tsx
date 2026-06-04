@@ -1,6 +1,7 @@
 "use client";
 
-import { ComponentType, CSSProperties, ReactNode, useEffect, useState } from "react";
+import { ComponentType, CSSProperties, ReactNode, useEffect } from "react";
+import { useIsClient } from "@patch-kit/utils";
 import { createPortal } from "react-dom";
 import { TOAST_DEFAULTS, ToastOptions, ToastPlacement, useToastStore } from "./useToast";
 import ToastItem from ".";
@@ -51,9 +52,7 @@ export function ToastRenderer<T extends string = string>({
   onClose,
 }: ToastRendererProps<T>) {
   const toasts = useToastStore((store) => store.toasts);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => setIsClient(true), []);
+  const isClient = useIsClient();
 
   useEffect(() => {
     if (limit === undefined) return;

@@ -1,15 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useIsClient } from "@patch-kit/utils";
 import { usePopoverStore } from "./usePopover";
 import Popover from "./";
 
 export const PopoverRenderer = () => {
   const popovers = usePopoverStore((state) => state.popovers);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => setIsClient(true), []);
+  const isClient = useIsClient();
 
   if (!isClient) return null;
 

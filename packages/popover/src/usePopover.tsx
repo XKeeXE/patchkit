@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { create } from "zustand";
+import { createId } from "@patch-kit/utils";
 
 export interface PopoverConfig {
   id: string;
@@ -43,12 +44,6 @@ export const POPOVER_DEFAULTS: PopoverOptions = {
   gap: 4,
 };
 
-const createId = () => {
-  if (typeof crypto !== "undefined" && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-  return `popover-${Math.random().toString(36).slice(2, 10)}`;
-};
 
 export const usePopoverStore = create<PopoverStore>((set, get) => ({
   popovers: [],

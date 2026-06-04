@@ -2,6 +2,7 @@
 
 import { ComponentType, ReactNode } from "react";
 import { create } from "zustand";
+import { createId } from "@patch-kit/utils";
 import { ToastRenderer as ToastRendererBase, ToastRendererProps } from "./ToastRenderer";
 
 export type ToastPlacement =
@@ -38,12 +39,6 @@ export const TOAST_DEFAULTS = {
   offset: 16,
 };
 
-export const createId = () => {
-  if (typeof crypto !== "undefined" && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-  return `toast-${Math.random().toString(36).slice(2, 10)}`;
-};
 
 export const useToastStore = create<ToastStore>((set, get) => ({
   toasts: [],
