@@ -6,6 +6,7 @@ import React, {
   useReducer,
   useCallback,
   useMemo,
+  useRef,
 } from "react";
 import { Command } from "./types";
 
@@ -101,6 +102,7 @@ export function createHistory<T = any>() {
 
     const canUndo = state.step > 0;
     const canRedo = state.step < state.commands.length;
+    const busy = useRef(false);
 
     const addHistory = useCallback(
       (command: Command<T>, immediate = false) => {
@@ -110,30 +112,42 @@ export function createHistory<T = any>() {
       [limit]
     );
 
-    const undo = useCallback((steps = 1) => {
+    const undo = useCallback(async (steps = 1) => {
       if (steps <= 0) throw new Error(`undo() requires a positive number of steps, got ${steps}`);
+      if (busy.current) return;
       const { commands, step } = state;
       const actual = Math.min(steps, step);
+      if (actual === 0) return;
 
-      for (let index = 0; index < actual; index++) {
-        const value = commands[step - 1 - index].undo();
-        onUndo?.(value as T);
+      busy.current = true;
+      try {
+        for (let index = 0; index < actual; index++) {
+          const value = await commands[step - 1 - index].undo();
+          onUndo?.(value as T);
+        }
+        dispatch({ type: "UNDO", steps: actual });
+      } finally {
+        busy.current = false;
       }
-
-      dispatch({ type: "UNDO", steps: actual });
     }, [state, onUndo]);
 
-    const redo = useCallback((steps = 1) => {
+    const redo = useCallback(async (steps = 1) => {
       if (steps <= 0) throw new Error(`redo() requires a positive number of steps, got ${steps}`);
+      if (busy.current) return;
       const { commands, step } = state;
       const actual = Math.min(steps, commands.length - step);
-      
-      for (let index = 0; index < actual; index++) {
-        const value = commands[step + index].redo();
-        onRedo?.(value as T);
-      }
+      if (actual === 0) return;
 
-      dispatch({ type: "REDO", steps: actual });
+      busy.current = true;
+      try {
+        for (let index = 0; index < actual; index++) {
+          const value = await commands[step + index].redo();
+          onRedo?.(value as T);
+        }
+        dispatch({ type: "REDO", steps: actual });
+      } finally {
+        busy.current = false;
+      }
     }, [state, onRedo]);
 
     const resetHistory = useCallback(() => {
