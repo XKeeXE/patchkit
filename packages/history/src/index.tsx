@@ -11,8 +11,8 @@ import { Command } from "./types";
 
 interface HistoryContextType<T> {
   addHistory: (command: Command<T>, immediate?: boolean) => void;
-  undo: () => void;
-  redo: () => void;
+  undo: (steps?: number) => void;
+  redo: (steps?: number) => void;
   canUndo: boolean;
   canRedo: boolean;
   resetHistory: () => void;
@@ -26,8 +26,8 @@ interface HistoryState {
 
 type HistoryAction =
   | { type: "ADD"; command: Command<any>; limit: number }
-  | { type: "UNDO" }
-  | { type: "REDO" }
+  | { type: "UNDO"; steps: number }
+  | { type: "REDO"; steps: number }
   | { type: "RESET" };
 
 const initialState: HistoryState = {
@@ -59,11 +59,11 @@ function historyReducer(state: HistoryState, action: HistoryAction): HistoryStat
     }
     case "UNDO": {
       if (state.step <= 0) return state;
-      return { ...state, step: state.step - 1 };
+      return { ...state, step: Math.max(0, state.step - action.steps) };
     }
     case "REDO": {
       if (state.step >= state.commands.length) return state;
-      return { ...state, step: state.step + 1 };
+      return { ...state, step: Math.min(state.commands.length, state.step + action.steps) };
     }
     case "RESET":
       return initialState;
@@ -110,24 +110,30 @@ export function createHistory<T = any>() {
       [limit]
     );
 
-    const undo = useCallback(() => {
+    const undo = useCallback((steps = 1) => {
+      if (steps <= 0) throw new Error(`undo() requires a positive number of steps, got ${steps}`);
       const { commands, step } = state;
-      if (step <= 0) return;
+      const actual = Math.min(steps, step);
 
-      const command = commands[step - 1];
-      const value = command.undo();
-      onUndo?.(value as T);
-      dispatch({ type: "UNDO" });
+      for (let index = 0; index < actual; index++) {
+        const value = commands[step - 1 - index].undo();
+        onUndo?.(value as T);
+      }
+
+      dispatch({ type: "UNDO", steps: actual });
     }, [state, onUndo]);
 
-    const redo = useCallback(() => {
+    const redo = useCallback((steps = 1) => {
+      if (steps <= 0) throw new Error(`redo() requires a positive number of steps, got ${steps}`);
       const { commands, step } = state;
-      if (step >= commands.length) return;
+      const actual = Math.min(steps, commands.length - step);
+      
+      for (let index = 0; index < actual; index++) {
+        const value = commands[step + index].redo();
+        onRedo?.(value as T);
+      }
 
-      const command = commands[step];
-      const value = command.redo();
-      onRedo?.(value as T);
-      dispatch({ type: "REDO" });
+      dispatch({ type: "REDO", steps: actual });
     }, [state, onRedo]);
 
     const resetHistory = useCallback(() => {
