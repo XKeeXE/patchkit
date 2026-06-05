@@ -7,24 +7,30 @@ const { HistoryProvider, useHistory } = createHistory<string>();
 
 type StoryArgs = {
   limit: number;
+  steps: number;
 };
 
 const meta: Meta<StoryArgs> = {
   title: "HISTORY",
   args: {
     limit: 64,
+    steps: 1,
   },
   argTypes: {
     limit: {
       control: { type: "range", min: 1, max: 128, step: 1 },
       description: "Maximum number of undoable steps.",
     },
+    steps: {
+      control: { type: "range", min: 1, max: 32, step: 1 },
+      description: "Number of steps to undo/redo at once.",
+    },
   },
 };
 
 export default meta;
 
-const Content = () => {
+const Content = ({ steps }: { steps: number }) => {
   const { addHistory, undo, redo, canUndo, canRedo, resetHistory } = useHistory();
   const [value, setValue] = useState("");
   const prevRef = useRef("");
@@ -44,10 +50,10 @@ const Content = () => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "z" && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
-      if (e.shiftKey) redo(); else undo();
+      if (e.shiftKey) redo(steps); else undo(steps);
     } else if (e.key === "y" && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
-      redo();
+      redo(steps);
     }
   };
 
@@ -66,14 +72,14 @@ const Content = () => {
       />
       <div className="flex gap-2">
         <button
-          onClick={undo}
+          onClick={() => undo(steps)}
           disabled={!canUndo}
           className={`${btnBase} ${canUndo ? btnEnabled : btnDisabled}`}
         >
           ← Undo
         </button>
         <button
-          onClick={redo}
+          onClick={() => redo(steps)}
           disabled={!canRedo}
           className={`${btnBase} ${canRedo ? btnEnabled : btnDisabled}`}
         >
@@ -95,7 +101,7 @@ const Content = () => {
 
 const Trigger = (args: StoryArgs) => (
   <HistoryProvider limit={args.limit}>
-    <Content />
+    <Content steps={args.steps} />
   </HistoryProvider>
 );
 
