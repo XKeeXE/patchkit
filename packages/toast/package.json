@@ -1,6 +1,6 @@
 {
   "name": "@patch-kit/toast",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "Toast Engine for React",
   "license": "MIT",
   "repository": {

@@ -1,7 +1,7 @@
 "use client";
 
 import { ComponentType, CSSProperties, ReactNode, useEffect } from "react";
-import { useIsClient } from "@patch-kit/utils";
+import { useIsClient, windowHistory, ROUTE_EVENT } from "@patch-kit/utils";
 import { createPortal } from "react-dom";
 import { TOAST_DEFAULTS, ToastOptions, ToastPlacement, useToastStore } from "./useToast";
 import ToastItem from ".";
@@ -52,7 +52,19 @@ export function ToastRenderer<T extends string = string>({
   onClose,
 }: ToastRendererProps<T>) {
   const toasts = useToastStore((store) => store.toasts);
+  const closeAllToasts = useToastStore((store) => store.closeAllToasts);
   const isClient = useIsClient();
+
+  useEffect(() => {
+    windowHistory();
+    const handler = () => closeAllToasts();
+    window.addEventListener("popstate", handler);
+    window.addEventListener(ROUTE_EVENT, handler);
+    return () => {
+      window.removeEventListener("popstate", handler);
+      window.removeEventListener(ROUTE_EVENT, handler);
+    };
+  }, [closeAllToasts]);
 
   useEffect(() => {
     if (limit === undefined) return;

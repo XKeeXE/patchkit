@@ -2,26 +2,9 @@
 
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
-import { useIsClient } from "@patch-kit/utils";
+import { useIsClient, windowHistory, ROUTE_EVENT } from "@patch-kit/utils";
 import Modal from "./";
 import { useModal, useModalStore } from "./useModal";
-
-const ROUTE_EVENT = "patchkit:routechange";
-const PATCHED_FLAG = "__patchkitRoutePatched";
-
-type HistoryMethod = (data: unknown, unused: string, url?: string | URL | null) => void;
-
-function patchHistory() {
-  if (typeof window === "undefined" || (window as any)[PATCHED_FLAG]) return;
-  (window as any)[PATCHED_FLAG] = true;
-  for (const method of ["pushState", "replaceState"] as const) {
-    const original = history[method].bind(history) as HistoryMethod;
-    history[method] = function (data, unused, url) {
-      original(data, unused, url);
-      window.dispatchEvent(new Event(ROUTE_EVENT));
-    };
-  }
-}
 
 interface ModalRendererProps {
   root?: HTMLElement | string;
@@ -81,7 +64,7 @@ export const ModalRenderer = ({ root, closeKey = "Escape" }: ModalRendererProps)
 
   // Route change detection — works with any router via History API
   useEffect(() => {
-    patchHistory();
+    windowHistory();
     const handler = () => closeAllModals();
     window.addEventListener("popstate", handler);
     window.addEventListener(ROUTE_EVENT, handler);
